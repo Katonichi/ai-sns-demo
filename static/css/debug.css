@@ -1,0 +1,61 @@
+/* デバッグコンソール */
+.debug-console {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	width: 300px;
+	height: 200px;
+	background-color: rgba(0, 0, 0, 0.8); /* 背景は透過の黒 */
+	color: #EEE;
+	border: 1px solid #444;
+	z-index: 1000;
+	display: none; /* 初期状態では非表示 */
+	resize: both;
+	/* overflow: auto; */
+	overflow: hidden;
+	border-radius: 8px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
+	font-family: "Osaka－等幅", Osaka-mono, "ＭＳ ゴシック", "MS Gothic", monospace;
+  }
+  
+  .debug-console.small {
+	width: 300px;
+	height: 200px;
+  }
+  
+  .debug-console.large {
+	width: 800px;
+	height: 600px;
+  }
+  
+  .debug-header {
+	padding: 10px;
+	cursor: move; /* ドラッグで移動 */
+	background-color: rgba(255,255,255,0.15);
+	border-bottom: 1px solid #444;
+	position: relative;
+  }
+  
+  .debug-content {
+	padding: 10px;
+	font-size: 12px;
+	white-space: pre-wrap;
+	max-height: calc(100% - 40px);
+	overflow-y: auto;
+  }
+  
+  .debug-btn {
+	background-color: transparent;
+	border: none;
+	color: white;
+	cursor: pointer;
+	font-size: 16px;
+	margin-left: 5px;
+	position: absolute;
+    right: 5px;
+    padding: 5px;
+    bottom: 4px;
+  }
+  .debug-btn.debug-btn--close  {right: 5px;}
+  .debug-btn.debug-btn--expand {right: 2.5em;}

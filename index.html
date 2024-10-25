@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIxSNS チャット</title>
+	<link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    </style>
+</head>
+<body class="index">
+	<header>
+		<div class="container container--header">
+			<div class="logo logo--header"><img class="logo__image" src="/static/logo.png" alt="AIxSNS"></div>
+			<h1><span class="d-none">AIxSNS</span>プロトタイプ</h1>
+            {% if user_id %}
+            <div class="header-control">
+                <span class="header-control__name">ログイン中：{{ user_name }}（{{ user_id }}）</span>
+                <button class="header-control__logout logout-button btn btn-outline-light btn-sm mx-2" type="button"><i class="bi bi-box-arrow-right"></i><span class="btn__text">ログアウト</span></button>
+                <button class="header-control__setting btn btn-outline-light btn-sm mx-2" id="js-btn-setting" type="button" data-bs-toggle="modal" data-bs-target=".my-modal-detail"><i class="bi bi-gear"></i><span class="btn__text">AIキャラ設定</span></button>
+            </div>
+            {% endif %}
+		</div>
+	</header>
+	<div class="container container--main">
+
+		<div class="main">
+			<div id="chat-box" class="main__output"></div>
+			
+			<div class="main__input">
+				<p class="note-input">※「Shift」＋「Enter」で改行。「Enter」でメッセージを送信します。</p>
+				<textarea id="chat-input" class="form-control" placeholder="メッセージを入力してください..." rows="2"></textarea>
+			</div>
+		</div>
+
+		<!-- 【モーダル】AIキャラ設定 -->
+		<div class="modal fade my-modal-detail" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" data-show="true">
+			<div class="modal-dialog modal-xl modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="m-0"><i class="bi bi-android2 pe-2 fs-4"></i>AIキャラ設定</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="ai-character-settings">
+							<dl class="settings-group">
+								<dt class="settings-name">基本キャラ</dt>
+								<dd class="settings-input">
+									<p class="form-text">※主に喋り口調が変化します</p>
+									<div class="settings-input-tone__radios">
+										<!-- JavaScriptで動的にラジオボタンが生成される -->
+									</div>
+									<!--
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="tone" value="優しい、柔らかい、親しみがある" checked>ノーマルAI</label>
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="tone" value="ロボット、敬語、語尾がカタカナ、語尾の例は 「デス」「と思いマス」など">ロボット</label>
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="tone" value="サロメ嬢、絵に描いたような極端なお嬢様口調、一人称は「わたくし」、平叙文の語尾は「ですわ。」を多用、テンションが上がると「ですわ～～～！」。疑問文では「かしら？」「ですの？」「ますの？」など。">お嬢様</label>
+									-->
+								</dd>
+							</dl>
+							<dl class="settings-group">
+								<dt class="settings-name">性格</dt>
+								<dd class="settings-input">
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="personality" value="丁寧、誠実、おせっかい、世話好き" checked>丁寧</label>
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="personality" value="端的、クール、言葉数が少ない、余計なことは言わない">クール</label>
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="personality" value="天然キャラ、どじ、そそっかしい">天然</label>
+								</dd>
+							</dl>
+							<dl class="settings-group">
+								<dt class="settings-name">ユーモア</dt>
+								<dd class="settings-input">
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="humor" value="ここぞと言うときだけユーモアを発揮する" checked>控えめ</label>
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="humor" value="極度にユーモアを持っている、隙あらばユーモアを混じえた回答をする">抜群</label>
+									<label class="form-check-label"><input class="form-check-input" type="radio" name="humor" value="なし">なし</label>
+								</dd>
+							</dl>
+							<dl class="settings-group">
+								<dt class="settings-name">学習サポート機能</dt>
+								<dd class="settings-input">
+									<p class="form-text">※この機能をONにすると、会話内容に応じて学習をサポートする各種機能（用語解説、用語記憶、確認クイズ、関連情報）が不定期に発動します</p>
+									<select id="ai-learning-support" class="form-control form-select">
+										<option class="form-check-input" value="ON" checked>ON</option>
+										<option class="form-check-input" value="OFF">OFF</option>
+									</select>
+								</dd>
+							</dl>
+							<dl class="settings-group">
+								<dt class="settings-name">その他の指示</dt>
+								<dd class="settings-input">
+									<p class="form-text">※自由に追加の指示を与えることができます</p>
+									<textarea id="ai-other-instructions" class="form-control" rows="3" placeholder="例：少し辛辣だが、風紀の乱れを嫌い正義感は誰より強い。語尾の特徴は、 「ダ」、「ナ」など。"></textarea>
+								</dd>
+							</dl>
+							<div class="text-end mt-4 px-3">
+								<button type="button" class="btn btn-primary px-5" id="save-ai-settings">保存</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="footer">
+		<div class="d-flex justify-content-center align-items-center">
+			<div class="logo logo--footer me-3 mb-1">
+				<img class="logo__image" src="/static/logo.png" alt="AIxSNS">
+			</div>
+			<div class="">
+				<p class="my-1">
+					山梨ニューメディアセンター<br />
+					〒400-8545 山梨県甲府市北口2-6-10
+				</p>
+			</div>
+		</div>
+		<address class="copyright">
+				© 2024 Yamanashi NewMedia Center All Rights Reserved.
+		</address>
+	</footer>
+
+	<!-- 泡背景用キャンバス -->
+    <link rel="stylesheet" href="/static/css/awa.css">
+	<canvas id="canvas"></canvas>
+    <!-- <script src="/static/js/awa.js"></script> -->
+    <!-- <script src="/static/js/awa_321.js"></script> -->
+    <script src="/static/js/awa_x.js"></script>
+
+	<!-- デバッグ用コンソール -->
+    <link rel="stylesheet" href="/static/css/debug.css">
+	<div id="debug-console" class="debug-console small">
+		<div class="debug-header">
+			<span>Debug Console</span>
+			<button id="expand-debug" class="debug-btn debug-btn--expand">⬆</button>
+			<button id="close-debug" class="debug-btn debug-btn--close">×</button>
+		</div>
+		<div id="debug-content" class="debug-content"></div>
+	</div>
+    <script src="/static/js/debug.js"></script>
+
+	<!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 自作のJavaScript -->
+	<script>
+		//==================================================================================================
+		// 定数定義
+		//==================================================================================================
+
+		// Cookie保存日数
+		const COOKIE_EXPIRES_DAYS = 30;
+
+		// セリフ表示
+		const MSG_CHAR_DELAY = 30;	//１文字表示間隔（ミリ秒）
+		const MSG_BR_DELAY   = 500;	//改行表示間隔（ミリ秒）
+
+		// toneの設定とアバター画像のマッピング
+		const toneSettings = {
+			1: { 
+				label: "ノーマルAI", 
+				prompt: "名前は「AIロイド」。優しい、柔らかい、親しみがある", 
+				avatar: 'avatar_01.png' 
+			},
+			2: { 
+				label: "ロボット", 
+				prompt: "ロボット。名前は「AI2-D2」。敬語、語尾がカタカナ、語尾の例は「デス」「と思いマス」「くださいマセ」など", 
+				avatar: 'avatar_02.png' 
+			},
+			3: { 
+				label: "お嬢様", 
+				prompt: "お嬢様。名前は「AIジョー」。絵に描いたような極端なお嬢様口調、一人称は「わたくし」、名詞の頭に「お会議」のように「お」を付ける。平叙文の語尾は「ですわ。」を多用、感情が高まると「ですわ～～！」となる", 
+				avatar: 'avatar_03.png' 
+			}
+		};
+
+		// アバター画像パス
+		const PATH_AVATAR = '/static/avatar/';
+
+		// アバター画像（ユーザ＋AIユニット）
+		const avatar_user = '//robohash.org/' + Math.random().toString(32).substring(2);	//ユーザはロボハッシュ
+		let   avatar_ai   = '';																//AIは動的取得
+
+		//==================================================================================================
+		// 変数定義
+		//==================================================================================================
+		
+		// 初期値としてHTMLフォームのデフォルト選択値を取得
+        let aiSettings = {
+            tone: ($('input[name="tone"]:checked').val() || 1),
+            personality: $('input[name="personality"]:checked').val(),
+            humor: $('input[name="humor"]:checked').val(),
+            learning_support: $('#ai-learning-support').val(),
+            other_instructions: $('#ai-other-instructions').val()  // その他の指示
+        };
+
+		//==================================================================================================
+		// ロード処理
+		//==================================================================================================
+		// ページ読み込み時
+		$(document).ready(function() {
+			// CookieからaiSettingsを取得
+			const savedAiSettings = getCookie('aiSettings');
+			
+			if (savedAiSettings) {
+				// Cookieに保存されている場合はその値を使用
+				aiSettings = JSON.parse(savedAiSettings);
+
+				/* // デバッグ用ログ出力
+				console.log("Cookieから復元されたaiSettings:");
+				console.log("tone:", aiSettings.tone);
+				console.log("personality:", aiSettings.personality);
+				console.log("humor:", aiSettings.humor);
+				console.log("learning_support:", aiSettings.learning_support);
+				console.log("other_instructions:", aiSettings.other_instructions); */
+
+				// モーダル内のフォームに反映
+				$('input[name="tone"][value="' + aiSettings.tone + '"]').prop('checked', true);
+				$('input[name="personality"][value="' + aiSettings.personality + '"]').prop('checked', true);
+				$('input[name="humor"][value="' + aiSettings.humor + '"]').prop('checked', true);
+				$('#ai-learning-support').val(aiSettings.learning_support);
+				$('#ai-other-instructions').val(aiSettings.other_instructions);
+			} else {
+				// Cookieに保存されていない場合は、初期値としてフォームのデフォルト選択値を使用
+				aiSettings = {
+					tone: '1',  // デフォルトは1
+					personality: $('input[name="personality"]:checked').val(),
+					humor: $('input[name="humor"]:checked').val(),
+					learning_support: $('#ai-learning-support').val(),
+					other_instructions: $('#ai-other-instructions').val()
+				};
+			}
+
+			// AIキャラ設定モーダル内、tone（基本キャラ）ラジオボタン生成
+			generateToneOptions();
+
+			// tone（基本キャラ）に基づいてAIアバター画像URL取得
+			const selectedToneId = parseInt(aiSettings.tone, 10);  // 数値IDを取得
+			avatar_ai = PATH_AVATAR + toneSettings[selectedToneId].avatar;  // AIアバター画像のパスを動的設定
+
+			// アバター画像プリロード（ユーザ＋AIユニット）
+			preloadImage(avatar_user);
+			preloadImage(avatar_ai);
+
+			// AIユニットに挨拶させる（※簡易的な方法）
+		    sendMessageToServer("私の名前は「{{ user_name }}」です。あなたの性格やユーモアに基づいて、50文字以内で当たり障りのない最初の挨拶を言って。自分の名前は言わないでいいです。");
+		});
+
+		//==================================================================================================
+		// イベント定義
+		//==================================================================================================
+		
+        // ログアウトボタン
+        $('.logout-button').on('click', function() {
+            window.location.href = '/logout';
+        });
+
+		// AIキャラ設定 保存ボタン
+        $('#save-ai-settings').on('click', function() {
+            aiSettings = {
+				tone: $('input[name="tone"]:checked').val(),
+				personality: $('input[name="personality"]:checked').val(),
+				humor: $('input[name="humor"]:checked').val(),
+				learning_support: $('#ai-learning-support').val(),
+				other_instructions: $('#ai-other-instructions').val()
+			};
+
+			// CookieにaiSettingsを保存
+    		setCookie('aiSettings', JSON.stringify(aiSettings));
+
+			// tone（基本キャラ）に基づいてアバター画像を設定
+		//	const selectedToneId = parseInt(aiSettings.tone, 10);  // 数値IDを取得
+		//	avatar_ai = PATH_AVATAR + (toneSettings[selectedToneId].avatar || toneSettings[1].avatar);  // デフォルトはtone 1
+
+			// tone（基本キャラ）に基づいてアバター画像を設定
+		//	const selectedToneValue = aiSettings.tone;
+		//	const selectedToneId = Object.keys(toneSettings).find(key => toneSettings[key].value === selectedToneValue);		//[ToDo:]★★★ここの作りがいまいち
+		//	avatar_ai = PATH_AVATAR + (toneSettings[selectedToneId].avatar || toneSettings[1].avatar);  // デフォルトはtone 1
+
+			// tone（基本キャラ）に基づいて新しいAIアバター画像プリロード
+			avatar_ai = PATH_AVATAR + (toneSettings[aiSettings.tone].avatar || toneSettings[1].avatar);  // デフォルトはtone 1
+    		preloadImage(avatar_ai);
+
+            alert("AIキャラ設定が変更・保存されました！\n（※設定はCookieに"+COOKIE_EXPIRES_DAYS+"日間保存されます）");
+            $('.modal').modal('hide'); // モーダルを閉じる
+        });
+
+		// チャット入力「Shift+Enter」-> 改行、「Enter」-> 送信
+		$('#chat-input').on('keydown', function(event) {
+			if (event.key === 'Enter' && !event.shiftKey) {
+				event.preventDefault(); // Enterキーのデフォルト動作を防ぐ
+				const userMessage = $('#chat-input').val().trim();
+				const formattedMessage = userMessage.replace(/\n/g, "<br />");
+
+				if (formattedMessage !== "") {
+					// ユーザーのメッセージを表示
+					const userDiv = `
+						<div class="message message--user d-flex">
+							<div class="message__avatar">
+								<img class=message__image src="${avatar_user}" />
+								<br />
+								<span class="message__name">{{ user_name }}</span>
+							</div>
+							<div class="message__dialogue">
+								<span class="message__text">${formattedMessage}</span>
+							</div>
+						</div>
+					`;
+					$('#chat-box').append(userDiv);
+				//	$('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+					$('#chat-box').animate({
+						scrollTop: $('#chat-box')[0].scrollHeight
+					}, 500);  // 500msかけてスクロール
+	
+					// サーバにメッセージとAIキャラ設定を送信
+					sendMessageToServer(userMessage);
+	
+					// 入力フィールドをクリア
+					$('#chat-input').val('');
+				}
+			}
+		});
+	
+		//==================================================================================================
+		// 関数定義
+		//==================================================================================================
+				
+		/*
+		// AIユニットはtoneに基づいて初期アバター画像をプリロード
+		const selectedToneId = parseInt(aiSettings.tone, 10);  // 数値IDを取得
+		if (!toneSettings[selectedToneId]) {
+			// IDが存在しない場合はデフォルトの1を使用
+			console.warn(`Invalid tone ID: ${selectedToneId}. Using default tone ID: 1`);
+			avatar_ai = PATH_AVATAR + toneSettings[1].avatar;  // デフォルトはtone 1
+		} else {
+			avatar_ai = PATH_AVATAR + toneSettings[selectedToneId].avatar;  // 正しいtoneのアバター画像
+		}
+		preloadImage(avatar_ai);  // プリロード
+		*/
+
+		// tone（基本キャラ）のラジオボタンを動的に生成
+		function generateToneOptions() {
+			const toneContainer = $('.settings-input-tone__radios');
+			toneContainer.empty();  // 既存のラジオボタンをクリア
+			Object.keys(toneSettings).forEach(key => {
+				const tone = toneSettings[key];
+				const isChecked = (key === aiSettings.tone) ? 'checked' : '';  // Cookieの値がある場合はそれを使用、なければデフォルト
+				const radioButton = `
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" name="tone" value="${key}" ${isChecked}>
+						${tone.label}
+					</label>
+				`;
+				toneContainer.append(radioButton);
+			});
+		}
+
+		// サーバにメッセージを送信する関数
+		function sendMessageToServer(message) {
+
+			//▼▼▼[TEST:]------------------------------2024/10/21：仮のつくり
+			// [MEMO:]現状のデモではサーバ側にAIキャラ設定のマスタ情報を持たせたくないので多少強引にtoneSettingsに持たせているプロンプト情報を利用
+			// AIキャラ設定をサーバに送信するため、tone(1,2,3など)をprompt(口調指定のプロンプト文)に変換
+			console.log(aiSettings.tone);
+			const aiSettingsToSend = {
+				tone: toneSettings[aiSettings.tone].prompt,  // promptに変換
+				personality: aiSettings.personality,
+				humor: aiSettings.humor,
+				learning_support: aiSettings.learning_support,
+				other_instructions: aiSettings.other_instructions
+			};
+			//▲▲▲[TEST:]------------------------------2024/10/21：仮のつくり
+
+			$.ajax({
+				url: '/chat',
+				method: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+                    user_input: message,			// 入力メッセージ
+                //	ai_settings: aiSettings			// AIキャラ設定
+                    ai_settings: aiSettingsToSend	// AIキャラ設定
+                }),
+                success: function(response) {
+                    appendAiMessage(response.response);
+
+					//▼▼▼[TEST:]------------------------------2024/10/22：デバッグ
+					// サーバから返されたデバッグ情報を表示
+					if (response.debug_info) {
+						// logDebugMessage(`User Input: ${response.debug_info.user_input}`);
+						// logDebugMessage(`Memory: ${response.debug_info.memory}`);
+						logDebugMessage(response.debug_info);
+					}
+					//▲▲▲[TEST:]------------------------------2024/10/22：デバッグ
+		},
+                error: function(error) {
+                    console.error('エラー:', error);
+                }
+			});
+		}
+
+		// サーバからのAIユニットの応答を表示
+		function appendAiMessage(message) {
+			const formattedMessage = message.replace(/\n/g, "<br>");
+			const aiDiv = `
+				<div class="message message--ai d-flex">
+					<div class="message__avatar">
+						<img class=message__image src="${avatar_ai}" />
+						<br />
+						<span class="message__name">AIユニット</span>
+					</div>
+					<div class="message__dialogue">
+						<span class="message__text color-trans">${formattedMessage}</span>
+					</div>
+				</div>
+			`;
+
+			const $aiDiv = $(aiDiv);
+			$('#chat-box').append($aiDiv);
+		//	$('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+			$('#chat-box').animate({
+				scrollTop: $('#chat-box')[0].scrollHeight
+			}, 500);  // 500msかけてスクロール
+
+			// メッセージを一文字ずつ色を変えて表示
+			const messageElement = $aiDiv.find('.message__text')[0];
+		    revealMessage(messageElement);
+		}
+	
+		// 文字の色を一文字ずつ変更して表示する関数
+		function revealMessage(targetElement, delay = MSG_CHAR_DELAY, brPause = MSG_BR_DELAY) {
+			const fullText = targetElement.innerHTML;  // 全メッセージを取得
+			let index = 0;
+			let is_initial = true;
+			let delay_now = delay;
+			
+			function revealNextChar() {
+				if (index < fullText.length) {
+					// `<br>`タグの場合、一回で表示
+					if (fullText.substring(index, index + 4) === '<br>') {
+						targetElement.innerHTML = fullText.substring(0, index + 4) + 
+												`<span class="color-trans">${fullText.substring(index + 4)}</span>`;
+						index += 4;  // <br>は一度に表示するので、インデックスを4つ進める
+						delay_now = brPause;
+					} else {
+						// 通常の文字を一文字ずつ表示
+						targetElement.innerHTML = fullText.substring(0, index + 1) + 
+												`<span class="color-trans">${fullText.substring(index + 1)}</span>`;
+						index++;
+						delay_now = delay;
+					}
+					if (is_initial) {
+						// 一文字目表示時に全体の透明を解除
+						targetElement.classList.remove('color-trans');
+						is_initial = false;
+					}
+					setTimeout(revealNextChar, delay_now);  // <br>の後は一呼吸置く
+				}
+			}
+
+			revealNextChar();  // 最初の文字を表示
+		}
+
+		// 画像プリロード
+		function preloadImage(url) {
+			const img = new Image();
+			img.src = url; // この時点でブラウザが画像をキャッシュする
+			return img;
+		}
+
+		// Cookieから値を取得する関数
+		function getCookie(name) {
+			const value = `; ${document.cookie}`;
+			const parts = value.split(`; ${name}=`);
+			if (parts.length === 2) return parts.pop().split(';').shift();
+			return null;
+		}
+
+		// Cookieに値を保存する関数（COOKIE_EXPIRES_DAYS日有効）
+		function setCookie(name, value, days = COOKIE_EXPIRES_DAYS) {
+			const date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			const expires = `expires=${date.toUTCString()}`;
+			document.cookie = `${name}=${value}; ${expires}; path=/`;
+		}
+
+	</script>
+</body>
+</html>

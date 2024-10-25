@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ai-sns-demo:
+    build: .
+    container_name: ai-sns-demo
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env

@@ -1,0 +1,677 @@
+/* 共通・レイアウト */
+*,
+*:before,
+*:after {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+html,
+body {
+	height: 100%;
+}
+body {
+	font-family: Arial, sans-serif;
+	/* background-color: #859EB4; */
+	min-width: 319px;
+}
+/*
+body::after {
+	content: "";
+	position: fixed;
+	top: 0;
+	left: 0;
+	opacity: 0.14;
+	width: 100%;
+	height: 100%;
+	background-image: url("/static/bg.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: right;
+	z-index: -1;
+}
+*/
+.main {
+	width: 100%;
+	margin: 0 auto;
+}
+header,
+footer {
+	width: 100%;
+	color: #ebcaca;
+}
+header {
+	/* background-color: #031c32; */
+	padding:0.2em 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: auto;
+    z-index: 10;
+}
+footer {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    
+    background-color: #031c32;
+	padding-top: 10px;
+	padding-bottom: 0px;
+	text-align: center;
+	font-size: 0.7em;
+}
+.footer-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.container.container--header {
+	position: relative;
+}
+.logo.logo--header {
+	float: left;
+	margin-right: 0.5em;
+}
+.logo.logo--header .logo__image {
+	width: 100px;
+	height: auto;
+}
+header h1 {
+	font-size: 0.95em;
+	margin: 0 0 0 0.5em;
+	line-height: 3.4;
+}
+header .header-control {
+	position: absolute;
+	bottom: 0.75em;
+	right: 2em;
+	font-size: 0.8em;
+    display: flex;
+    align-items: end;
+}
+.header-control__name {
+    font-weight: bold;
+}
+.header-control .bi {
+    padding-right: 0.5em;
+}
+.btn.header-control__logout,
+.btn.header-control__setting {
+    padding: 4px 8px 3px;
+}
+
+.logo.logo--login {
+    text-align: center;
+    margin: 10px 0 25px;
+}
+.logo.logo--login .logo__image {
+	width: 100px;
+	height: auto;
+}
+.logo.logo--footer .logo__image {
+	width: 120px;
+	height: auto;
+}
+.copyright {
+	margin: 0;
+}
+
+.color-trans {
+	color: transparent;
+}
+
+/* リンクテキスト */
+a {
+    transition: all 0.2s ease;
+}
+
+/* フォーム */
+input[type=text],
+input[type=email],
+input[type=tel],
+input[type=password],
+textarea {
+	max-width: 100%;
+	font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
+input[type=text],
+input[type=email],
+input[type=tel],
+input[type=password],
+textarea,
+select {
+	background-color: #F6F6F6 !important;
+	border-color: #CCC !important;
+}
+.form-select {
+	width: auto;
+}
+
+/*-------------------------------------
+// ログイン画面
+-------------------------------------*/
+.login-box {
+    width: 400px;
+    max-width: 92%;
+    background: rgba(255,240,240,0.7);
+    backdrop-filter: blur(5px);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    border-radius: 10px;
+    padding: 1em 5%;
+    margin: 0 auto;
+}
+
+/* ふわっと表示 */
+.login-box {
+    opacity: 0;
+    filter: blur(4px); /* 全体にblurをかける */
+    transition: opacity 0.6s ease, filter 0.8s ease, transform 0.4s ease;
+}
+.login-box--visible {
+    opacity: 1;
+    filter: blur(0); /* フェードイン時にblurを解除 */
+}
+
+.login-title {
+    display: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 0 1em 0;
+}
+.login-sns {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1.2em 0 1em;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
+.login-sns__item {
+    list-style: none;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.login-sns__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 58px;
+    height: 58px;
+    border: 2px solid #808080;
+    border-radius: 50%;
+    padding: 0.2em;
+    color: #000;
+    transition: background-color 0.3s ease;
+}
+.login-sns__icon:hover {
+    border: 2px solid #606060;
+    background-color: rgba(0,0,0,0.05);
+}
+.login-sns__item .bi {
+    font-size: 1.5em;
+}
+.login-sns__text {
+    display: block;
+    font-size: 0.8em;
+    margin: 5px 0 0;
+}
+.login-msg {
+    color: #B00;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-indent: -1em;
+    margin-left: 1em;
+    line-height: 1.3;
+}
+.login-control {
+    font-size: 1em;
+    padding: 0;
+    margin: 1.4em 0 1.5em;
+}
+.login-control__label {
+    margin: 0.5em 0 0.2em 0;
+    font-size: 0.9em;
+}
+.login-control__input {
+    margin: 0.2em 0 1em 0;
+}
+input.login-input,
+select.login-input {
+    width: 100%;
+    max-width: 100% !important;
+    border-radius: 4px;
+    border: 1px solid #999 !important;
+    font-size: 0.9em;
+}
+.login-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid #333 !important;
+}
+    .login-input--select {
+}
+.login-input--text {
+    border: 1px solid red !important;
+}
+.login-box__link {
+    text-align: center;
+    font-size: 0.85em;
+    color: #666;
+    margin: 1em 0;
+}
+.login-box__link a {
+    color: #333;
+}
+.login-box__link a:hover {
+    color: #555;
+}
+.login-box__button {
+    margin: 1.6em 0 0.8em;
+    text-align: center;
+}
+.login-button {
+    width: 100%;
+    padding: 0.5em 3em 0.4em;
+}
+
+/*-------------------------------------
+// チャット画面
+-------------------------------------*/
+/* チャット */
+#chat-box {
+	width: 100%;
+	/* height: 500px; */
+	height: calc(100vh - 350px);
+	/* background-color: white;
+	border: 1px solid #ccc; */
+	padding: 0;
+	overflow-y: auto;
+}
+#chat-input {
+	width: 90%;
+	padding: 10px;
+	font-size: 15px;
+	margin-top: 10px;
+	min-height: 60px;
+}
+.main__input {
+	position: fixed;
+	bottom: 104px;
+	width: 100%;
+	/* background: #FFF; */
+	background: rgba(255,255,255,0.8);
+	left: 0;
+	padding: 1em 5%;
+	box-shadow: 0px -1px 4px rgba(0,0,0,0.4);
+	backdrop-filter: blur(3px);
+}
+.message {
+	margin-bottom: 0;
+}
+.message.message--user {
+	text-align: left;
+}
+.message.message--ai {
+	text-align: right;
+}
+/*
+.message--user .message__avatar   {float:left}
+.message--user .message__dialogue {float:right}
+.message--ai   .message__dialogue {float:left}
+.message--ai   .message__avatar   {float:right} 
+*/
+
+.message--user {flex-direction: row;}
+.message--ai   {flex-direction: row-reverse;}
+.message__avatar   {width: 90px;}
+.message__dialogue {width: calc(100% - 100px);}
+.message--user .message__avatar {margin-right: 10px;}
+.message--ai   .message__avatar {margin-left : 10px;}
+
+.message__dialogue {
+	position: relative;
+	top: 42px;
+	padding-bottom: 3em;
+}
+.message--user .message__dialogue {
+	left: -5px;
+}
+.message--ai .message__dialogue {
+	right: -5px;
+}
+
+.message__image {
+	width: 80px;
+}
+.message--user .message__image {
+	transform: scale(-1, 1);
+}
+.message--ai .message__image {
+}
+.message__name {
+	display: inline-block;
+	padding: 0;
+	font-size: 0.7em;
+	font-weight: bold;
+	text-align: center;
+	width: 100%;
+}
+.message--user .message__name {
+	/* color: #355; */
+	/* color: #DFF; */
+	color: #EEE;
+}
+.message--ai .message__name {
+	/* color: #555; */
+	color: #EEE;
+}
+.message__text {
+	display: inline-block;
+	max-width: 75%;
+	text-align: left;
+	padding: 12px 13px 10px 15px;
+	border-radius: 4px;
+	font-size: 0.9em;
+	box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+.message--user .message__text {
+	/* background: #BDD; */
+	background: rgba(245,212,212,1.0);
+}
+.message--ai .message__text {
+	/* background: #EEE; */
+	background: rgba(255,255,255,1.0);
+}
+
+.message__text::after {
+	content: "";
+	display: inline-block;
+	position: absolute;
+	top: 5px;
+	border: 10px solid transparent;
+
+	z-index: 1;
+	filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+}
+.message--user .message__text::after {
+	left: -25px;
+	border-right: 24px solid rgba(245,212,212,1.0);
+	-webkit-transform: rotate(30deg);
+	transform: rotate(30deg);
+}
+.message--ai .message__text::after {
+	right: -25px;
+	border-left: 24px solid rgba(255,255,255,1.0);
+	-webkit-transform: rotate(-30deg);
+	transform: rotate(-30deg);
+}
+
+.message__text::before {
+	content: "";
+	width: 15px;
+	height: 30px;
+	display: block;
+	position: absolute;
+	top: 8px;
+	z-index: 2;
+}
+.message--user .message__text::before {
+	background-color: rgba(245,212,212,1.0);
+	left: 0px;
+}
+.message--ai .message__text::before {
+	background-color: rgba(255,255,255,1.0);
+	right: 0px;
+}
+
+.note-input {
+	font-size: 0.8em;
+	margin: 0;
+	color: #666;
+}
+
+/* フッター固定（※他はレスポンシブ部に記載） */
+body {
+	position: relative;
+}
+.container.container--main {
+	padding-top: 75px;
+	/* padding-bottom: 100px; */
+	min-height: calc(100vh - 104px);
+}
+footer {
+	height: 104px;
+}
+
+/* モーダル */
+.modal-content {background-color: transparent; font-size: 0.9em;}
+.modal-header {background-color: #EEE; padding-left: 25px;}
+.modal-body {padding: 2rem 3%; background: rgba(255,255,255,0.4); backdrop-filter: blur(6px);}
+.modal-body li {margin: 0.5em 0px;}
+.modal-body .example {font-size: 0.8em; color: #666;}
+.modal-body {
+	border-bottom-left-radius: var(--bs-modal-inner-border-radius);
+	border-bottom-right-radius: var(--bs-modal-inner-border-radius);
+}
+/* (bootstrap上書き) */
+@media (min-width: 576px) {
+	.modal-dialog {
+		max-width: 80%;
+	}
+}
+@media (min-width: 992px) {
+	.modal-dialog {
+		max-width: 800px;
+	}
+}
+
+/* 設定 */
+.settings-group {
+	background-color: #F3F3F3;
+	border-radius: 10px;
+	padding: 0.5em 1em 0.3em;
+	margin: 0 1em 1em;
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+.settings-name {
+	font-weight: bold;
+	margin-bottom: 0.2em;
+}
+.settings-input {
+	padding: 0 3%;
+}
+.settings-input .form-check-label {
+	padding: 0.3em;
+	margin-left: 0.5em;
+	display: block;
+}
+.settings-input .form-check-label:hover {
+	cursor: pointer;
+}
+.settings-input .form-check-input {
+	margin-right: 0.3em;
+}
+.settings-input .form-check-input,
+.settings-input .form-select,
+.settings-input textarea {
+	border-color: #AAA;
+}
+.settings-input .form-check-label:hover .form-check-input {
+	border-color: #0d6efd;
+}
+.settings-group textarea {
+	font-size: 0.9em;
+}
+
+/* ------------------------------ レスポンシブ ------------------------------ */
+/* 大きめスマホ */
+@media (min-width: 480px) {
+    header h1 {
+        font-size: 1.3em;
+        line-height: 2.4;
+    }
+    .main {
+		width: 94%;
+	}
+	.message__dialogue {
+		top: 52px;
+		padding-bottom: 2.5em;
+	}
+	.message--user .message__dialogue,
+	.message--ai .message__dialogue {
+		left: 0;
+	}
+	.message__image {
+		width: 90px;
+	}
+	.message__name {
+		font-size: 0.8em;
+	}
+	.message__text {
+		max-width: 70%;
+		padding: 14px 15px 12px 18px;
+		font-size: 1em;
+	}
+	.settings-input {
+		padding: 0 1em;
+	}
+	.settings-input .form-check-label {
+		display: inline-block;
+	}
+    .footer-main {
+        flex-direction: row;
+    }
+
+    /* ヘッダーフッター固定（ログイン以外） */
+    body:not(.login) footer {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+    }
+    /* ログイン */
+    .login-box {
+        position: fixed;
+        top: 45%;
+        left: 50%;
+        transform: translateY(-53%) translateX(-50%); /* 初期状態は少し上に */
+        -webkit-transform: translateY(-53%) translateX(-50%);
+    }
+    .login-box--visible {
+        transform: translateY(-50%) translateX(-50%); /* 下に少し移動 */
+        -webkit-transform: translateY(-50%) translateX(-50%);
+    }
+    
+    
+}
+/* 小さいタブレット以上 */
+@media (min-width: 576px) {
+    .login-box {
+        padding: 1.5em 3em;
+    }
+}
+/* PC */
+@media (min-width: 768px) {
+	input[type=text],
+	input[type=email],
+	input[type=tel],
+	input[type=password],
+	textarea {
+		max-width: 96%;
+	}
+	#chat-box {
+		padding: 10px 20px;
+	}
+	.modal-content {
+		font-size: 1em;
+	}
+	.modal-body {
+		padding: 2rem 3rem;
+	}
+}
+/* 大きめPC */
+@media (min-width: 992px) {
+}
+/* もっと大きめPC */
+@media (min-width: 1580px) {
+}
+
+/* (逆に小さい場合) */
+/* タブレット未満 */
+@media (max-width: 767px) {
+    /* ヘッダーすっきり */
+    .header-control__name,
+    header .btn__text {
+        display: none;
+    }
+    .header-control .bi {
+        padding-right: 0;
+    }
+    .container.container--main {
+        padding-top: 60px;
+    }
+    #chat-box {
+        height: calc(100vh - 260px);
+    }
+    .main__input {
+        padding: 0.5em 5%;
+        font-size: 0.9em;
+    }
+    .main__input .note-input {
+        display: none;
+    }
+    #chat-input {
+        font-size: 14px;
+        padding: 8px 10px;
+        margin-top: 0;
+    }
+}
+@media (min-width: 576px) {
+    .container.container--header {
+      max-width: 100%;
+    }
+}
+/* 大きめスマホ以下 */
+@media (max-width: 479px) {
+    /* スマホ、かつ、ログイン */
+    .login header {
+        position: relative;
+        height: 50px;
+    }
+    .login footer {
+        position: relative;
+    }
+    .login .container.container--main {
+        padding: 20px 0 30px;
+        min-height: 0;
+    }
+    .login-box {
+        font-size: 0.9em;
+    }
+    .logo.logo--login {
+        display: none;
+    }
+    .login-title {
+        display: block;
+    }
+    /* チャットエリア */
+    .message__text {
+        max-width: 96%;
+        font-size: 0.85em;
+    }
+    .message__dialogue {
+        top: 30px;
+    }
+    .message__avatar {
+        width: 70px;
+    }
+    .message__image {
+        width: 60px;
+    }
+}
+/* (逆に)小さいスマホ以下 */
+@media (max-width: 380px) {
+}
+ 

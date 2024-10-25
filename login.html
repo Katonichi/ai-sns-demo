@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIxSNS ログイン</title>
+	<link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    </style>
+</head>
+<body class="login">
+	<header>
+		<div class="container container--header">
+			<div class="logo logo--header"><img class="logo__image" src="/static/logo.png" alt="AIxSNS"></div>
+			<h1><span class="d-none">AIxSNS</span>プロトタイプ | ログイン</h1>
+		</div>
+	</header>
+	<div class="container container--main">
+
+		<div class="main">
+
+			<div class="login-box">
+                <form id="login_form" class="login-box__form">
+                    <div class="login-logo logo logo--login"><img class="logo__image" src="/static/logo.png" alt="AIxSNS"></div>
+                    <h2 class="login-title">ログイン</h2>
+                    <ul class="login-sns">
+                        <li class="login-sns__item login-google"><a class="login-sns__icon" href="#"><i class="bi bi-google"></i></a><span class="login-sns__text">Google</span></li>
+                        <li class="login-sns__item login-microsoft"><a class="login-sns__icon" href="#"><i class="bi bi-microsoft"></i></a><span class="login-sns__text">X（Twitter）</span></li>
+                        <li class="login-sns__item login-apple"><a class="login-sns__icon" href="#"><i class="bi bi-apple"></i></a><span class="login-sns__text">Apple</span></li>
+                    </ul>
+                    
+                    <!-- メッセージ -->
+                    <div class="login-msg">
+                        {% for category, message in flash_messages %}
+                            <p class="{{ category }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <dl class="login-control login-box__control">
+                        <dt class="login-control__label" for="user_id">ユーザID</dt>
+                        <dd class="login-control__input">
+                            <select class="login-input login-input--select form-control form-select" id="user_id" name="user_id">
+                                <option class="login-input__option form-check-input" value="0001">加藤（ID: 0001）</option>
+                                <option class="login-input__option form-check-input" value="0002">武田（ID: 0002）</option>
+                                <option class="login-input__option form-check-input" value="0003">上杉（ID: 0003）</option>
+                                <option class="login-input__option form-check-input" value="9999">不正一生（ID: 9999）</option>
+                            </select>
+                        </dd>
+                        <dt class="login-control__label" for="user_pw">パスワード</dt>
+                        <dd class="login-control__input">
+                            <input type="password" class="login-input login-input--text form-control" id="user_pw" name="user_pw" value="" />
+                        </dd>
+                    </dl>
+                    <div class="login-box__link">
+                        <span class="login-link login-link--forget"><a href="#">パスワードを忘れた方</a></span>
+                        <span>／</span>
+                        <span class="login-link login-link--register"><a href="#">初めての方</a></span>
+                    </div>
+                    <div class="login-box__button">
+                        <button type="button" class="login-button btn btn-dark">ログイン</button>
+                    </div>
+                </form>
+            </div>
+		</div>
+
+	</div>
+
+	<footer class="footer">
+		<div class="footer-main">
+			<div class="logo logo--footer me-3 mb-1">
+				<img class="logo__image" src="/static/logo.png" alt="AIxSNS">
+			</div>
+			<div class="">
+				<p class="my-1">
+					山梨ニューメディアセンター<br />
+					〒400-8545 山梨県甲府市北口2-6-10
+				</p>
+			</div>
+		</div>
+		<address class="copyright">
+				© 2024 Yamanashi NewMedia Center All Rights Reserved.
+		</address>
+	</footer>
+
+	<!-- 泡背景用キャンバス -->
+    <link rel="stylesheet" href="/static/css/awa.css">
+	<canvas id="canvas"></canvas>
+    <!-- <script src="/static/js/awa.js"></script> -->
+    <!-- <script src="/static/js/awa_321.js"></script> -->
+    <script src="/static/js/awa_x.js"></script>
+
+	<!-- デバッグ用コンソール -->
+    <link rel="stylesheet" href="/static/css/debug.css">
+	<div id="debug-console" class="debug-console small">
+		<div class="debug-header">
+			<span>Debug Console</span>
+			<button id="expand-debug" class="debug-btn debug-btn--expand">⬆</button>
+			<button id="close-debug" class="debug-btn debug-btn--close">×</button>
+		</div>
+		<div id="debug-content" class="debug-content"></div>
+	</div>
+    <script src="/static/js/debug.js"></script>
+
+	<!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 自作のJavaScript -->
+	<script>
+		//==================================================================================================
+		// 定数定義
+		//==================================================================================================
+
+
+		//==================================================================================================
+		// 変数定義
+		//==================================================================================================
+		
+
+		//==================================================================================================
+		// ロード処理
+		//==================================================================================================
+		// ページ読み込み時
+		$(document).ready(function() {
+            setTimeout(function() {
+                $('.login-box').addClass('login-box--visible');
+            }, 500);
+		});
+
+		//==================================================================================================
+		// イベント定義
+		//==================================================================================================
+        $('.login-button').on('click', function() {
+            const userId = $("#user_id").val();
+            const userPw = $("#user_pw").val();
+
+            $('.login-msg').text('');
+
+            // サーバにユーザ情報を送信してログイン
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    user_id: userId,
+                    user_pw: userPw
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // ログインに成功したらチャット画面にリダイレクト
+                    window.location.href = '/';
+                } else {
+                    // alert("ログインに失敗しました");
+                    $('.login-msg').text(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('エラー:', error);
+                $('.login-msg').text('※システムエラーが発生しました');
+            });
+        });
+		
+		</script>
+</body>
+</html>
